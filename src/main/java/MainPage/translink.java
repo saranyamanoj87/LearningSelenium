@@ -61,9 +61,7 @@ public class translink {
         //Add to favourites
         driver.findElement(By.cssSelector(".AddDelGTFSFav[data-type='unstyledButton'][data-faux-type='link']")).click();
         Set<String> allWindows = driver.getWindowHandles();
-        Iterator<String> itr = allWindows.iterator();
-        while (itr.hasNext()) {
-            String win = itr.next();
+        for (String win : allWindows) {
             driver.switchTo().window(win);
         }
         driver.findElement(By.id("newfavourite")).clear();
