@@ -1,14 +1,15 @@
 package MainPage;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -47,8 +48,24 @@ public class translink {
         //click on Find schedule
         driver.findElement(By.cssSelector("section:nth-child(4) > div:nth-child(2) > button:nth-child(2)")).click();
         //6)In the result list, select and click “#99 – UBC B-Line”
-        driver.findElement(By.cssSelector("a[href='https://www.translink.ca/schedules-and-maps/route/99/direction/1/schedule']")).click();
+        WebElement link = driver.findElement(By.cssSelector("a[href='https://www.translink.ca/schedules-and-maps/route/99/direction/1/schedule']"));
+        JavascriptExecutor jsExecutor = (JavascriptExecutor)driver;
+        jsExecutor.executeScript("arguments[0].scrollIntoView(true)", link);
+        jsExecutor.executeScript("arguments[0].click();", link);
         //7)In the bus schedule page of “99”,a.	Update the date
+        String currentDate = driver.findElement(By.id("schedulestimefilter-startdate")).getText();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        try{
+            calendar.setTime(sdf.parse(currentDate));
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        calendar.add(Calendar.DAY_OF_MONTH,1);
+        String newDate = sdf.format(calendar.getTime());
+        String month = newDate.substring(5,7);
+        String date = newDate.substring(8,10);
+        driver.findElement(By.id("schedulestimefilter-startdate")).sendKeys(month+date);
         //8)In the schedule list, pick up following stops:a.50913 b.50916 c.58613
         driver.findElement(By.cssSelector("button[aria-label='No options selected']")).click();
         //WebElement stopName = driver.findElement(By.cssSelector("label > span"));
